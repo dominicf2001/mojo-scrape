@@ -7,3 +7,5 @@ Instructions:
 5. Click the console tab
 6. Paste in all of the code and hit enter
 7. $$ PROFIT $$
+
+NOTE: if you have an issue with the code running before hitting enter, go the settings in the inspect element menu and turn off instant evaluation
