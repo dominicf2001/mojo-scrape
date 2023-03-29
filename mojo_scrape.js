@@ -16,21 +16,18 @@ function sleep(ms) {
 }
 
 async function extractTableData() {
-  let data = "";
-  let rows = document.querySelectorAll('tr');
-
-  for (let j = 0; j < rows.length; j++) {
-    let r = rows[j];
-
-    if (j !== 0) {
-      Array.from(r.children).forEach((c) => {
-        if (c.textContent !== " " && c.textContent !== "0") {
-          data += c.textContent + " ";
+    let data = "";
+    let rows = document.querySelectorAll('tr');
+    for (let i = 1; i < rows.length; i++) {
+        let columns = Array.from(rows[i].children);
+        for (let j = 1; j < columns.length; ++j) {
+            if (columns[j].textContent !== " " && columns[j].textContent !== "0") {
+                if (j == 2 || j == 3) data += columns[j].textContent.replaceAll(" ", "_") + " ";
+                else data += columns[j].textContent + " ";
+            }
         }
-      });
-      data += "\n";
+        data += "\n";
     }
-  }
   return data;
 }
 
