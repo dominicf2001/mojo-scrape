@@ -2,7 +2,7 @@
 
 function downloadFile(filename, content) {
   const element = document.createElement('a');
-  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
+  element.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(content));
   element.setAttribute('download', filename);
   element.style.display = 'none';
   document.body.appendChild(element);
@@ -15,15 +15,16 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function extractTableData() {
+function extractTableData() {
     let data = "";
     let rows = document.querySelectorAll('tr');
     for (let i = 1; i < rows.length; i++) {
         let columns = Array.from(rows[i].children);
         for (let j = 1; j < columns.length; ++j) {
             if (columns[j].textContent !== " " && columns[j].textContent !== "0") {
-                if (j == 2 || j == 3) data += columns[j].textContent.replaceAll(" ", "_") + " ";
-                else data += columns[j].textContent + " ";
+                data += columns[j].textContent + " ";
+                if (j < columns.length - 1)
+                    data += ',';
             }
         }
         data += "\n";
@@ -40,20 +41,20 @@ function removeDuplicateLines(data) {
 async function extractPageData(times) {
   let fullData = "";
   for (let i = 0; i < times; i++) {
-    const tableData = await extractTableData();
+    const tableData = extractTableData();
     const uniqueTableData = removeDuplicateLines(tableData);
     fullData += uniqueTableData;
-    fullData += "\n";
     document.querySelector('.Table_pageArrowButton__X29ps+.Table_pageArrowButton__X29ps').click();
-    await sleep(750);
+    await sleep(600);
   }
   return fullData;
 }
 
 async function saveAllData(timesToRun) {
+  const header = "name,address,city,state,zip,phone,email\n"
   const fullData = await extractPageData(timesToRun);
-  const fileName = "output_full_data.txt";
-  downloadFile(fileName, fullData);
+  const fileName = "output_full_data.csv";
+  downloadFile(fileName, header + fullData);
 }
 
 // FIRST: COPY AND PASTE ALL THE CODE ABOVE, HIT ENTER
